@@ -42,8 +42,21 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDto> register(@RequestBody UserDto userDto) {
-        UserDto createdUser = authService.register(userDto);
-        return ResponseEntity.ok(createdUser);
+    public ResponseEntity<?> register(@RequestBody UserDto userDto) {
+        try{
+            UserDto createdUser = authService.register(userDto);
+            return ResponseEntity.ok(createdUser);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Email Error");
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Registration failed");
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+        
     }
 }

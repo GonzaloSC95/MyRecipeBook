@@ -15,7 +15,7 @@
     "DETAILS": "Ver Detalles",
     "INFO": "Información de la Receta",
     "IMAGE": "Imagen",
-    "CONFIRM_DELETE": "¿Estás seguro de que deseas eliminar esta receta?"
+    "CONFIRM_DELETE": "¿Estás seguro de que deseas eliminar la receta {{name}}?"
   },
   "INGREDIENT": {
     "NAME": "Nombre",
@@ -29,7 +29,6 @@
     "EDIT": "Editar Categoría",
     "DELETE": "Eliminar Categoría",
     "IMAGE": "Imagen de Categoría"
-
   },
   "USER": {
     "NAME": "Nombre",

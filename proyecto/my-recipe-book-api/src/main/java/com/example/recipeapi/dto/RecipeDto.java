@@ -75,4 +75,18 @@ public class RecipeDto {
     public void setIngredients(List<IngredientDto> ingredients) {
         this.ingredients = ingredients;
     }
+
+    @Override
+    public String toString() {
+        return "RecipeDto{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", steps='" + steps + '\'' +
+                ", time=" + time +
+                ", image='" + image + '\'' +
+                ", userId=" + userId +
+                ", categoryId=" + categoryId +
+                ", ingredients=" + ingredients +
+                '}';
+    }
 }

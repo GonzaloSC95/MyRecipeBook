@@ -13,7 +13,7 @@ interface LoginResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private currentUserSubject: BehaviorSubject<User | null>;
@@ -28,11 +28,11 @@ export class AuthService {
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
     let storedUser = null;
-    
+
     if (this.isBrowser) {
       storedUser = localStorage.getItem('currentUser');
     }
-    
+
     this.currentUserSubject = new BehaviorSubject<User | null>(
       storedUser ? JSON.parse(storedUser) : null
     );
@@ -52,18 +52,22 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, { email, password })
+    return this.http
+      .post<LoginResponse>(`${environment.apiUrl}/auth/login`, {
+        email,
+        password,
+      })
       .pipe(
-        tap(response => {
+        tap((response) => {
           if (this.isBrowser) {
             // Store token separately
             localStorage.setItem(this.authTokenKey, response.token);
-            
+
             // Store user info
             const user: User = {
               id: response.userId,
               name: response.name,
-              email: email
+              email: email,
             };
             localStorage.setItem('currentUser', JSON.stringify(user));
             this.currentUserSubject.next(user);
@@ -71,30 +75,33 @@ export class AuthService {
         }),
         catchError((error: HttpErrorResponse) => {
           console.error('Login error:', error);
-          
+          console.error('Login error.status:', error.status);
+          console.error('Login error.error:', error.error.message);
+          console.error('Login error.message:', error.message);
           // Handle specific error case for "Bad credentials"
           if (error.status === 500 && error.error instanceof SyntaxError) {
-            return throwError(() => new Error('Invalid email or password. Please try again.'));
+            return throwError(() => new Error(error.error.message));
           }
-          
+
           // Handle other errors
-          return throwError(() => new Error('Login failed. Please try again later.'));
+          return throwError(() => new Error(error.error.message));
         })
       );
   }
 
   register(user: User): Observable<User> {
-    return this.http.post<User>(`${environment.apiUrl}/auth/register`, user)
+    return this.http
+      .post<User>(`${environment.apiUrl}/auth/register`, user)
       .pipe(
-        tap(newUser => {
+        tap((newUser) => {
           if (this.isBrowser) {
             localStorage.setItem('currentUser', JSON.stringify(newUser));
             this.currentUserSubject.next(newUser);
           }
         }),
-        catchError(error => {
+        catchError((error) => {
           console.error('Registration error:', error);
-          return throwError(() => new Error('Registration failed. Please try again.'));
+          return throwError(() => new Error(error.error.message));
         })
       );
   }

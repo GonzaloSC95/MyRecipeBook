@@ -2,19 +2,22 @@
   <div class="col-md-8">
     <h1>
       @if (category) {
-        {{ category.name }}
+      {{ category.name }}
       } @else {
-        {{ 'CATEGORY.RECIPES' | translate }}
+      {{ 'CATEGORY.RECIPES' | translate }}
       }
     </h1>
   </div>
-  <div class="col-md-4 text-end">
+  <div class="col-md-12 text-end">
     <button *ngIf="category" class="btn btn-secondary me-2" (click)="editCategory()">
       <i class="bi bi-pencil"></i> {{ 'CATEGORY.EDIT' | translate }}
     </button>
     <a routerLink="/recipes/new" class="btn btn-primary me-2">
       <i class="bi bi-plus-circle"></i> {{ 'RECIPE.ADD' | translate }}
     </a>
+    <button *ngIf="category" class="btn btn-danger me-2" (click)="deleteCategory()">
+      <i class="bi bi-trash"></i> {{ 'CATEGORY.DELETE' | translate }}
+    </button>
     <a routerLink="/categories" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i> {{ 'COMMON.BACK' | translate }}
     </a>
@@ -22,37 +25,37 @@
 </div>
 
 @if (loading) {
-  <div class="d-flex justify-content-center">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+<div class="d-flex justify-content-center">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+  </div>
+</div>
+} @else if (error) {
+<div class="alert alert-danger">{{ error }}</div>
+} @else if (recipes.length === 0) {
+<div class="alert alert-info">{{ 'COMMON.NO_ITEMS' | translate }}</div>
+} @else {
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+  @for (recipe of recipes; track recipe.id) {
+  <div class="col">
+    <div class="card h-100 hover-shadow" [routerLink]="['/recipes', recipe.id]" style="cursor: pointer;">
+      @if (recipe.image) {
+      <img [src]="recipe.image" class="card-img-top recipe-image" [alt]="recipe.title">
+      } @else {
+      <div class="card-img-top recipe-image bg-light d-flex align-items-center justify-content-center">
+        <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+      </div>
+      }
+      <div class="card-body text-center">
+        <h5 class="card-title">{{ recipe.title }}</h5>
+        <p class="card-text text-muted">
+          <i class="bi bi-clock"></i> {{ recipe.time }} {{ 'RECIPE.TIME' | translate }}
+        </p>
+      </div>
     </div>
   </div>
-} @else if (error) {
-  <div class="alert alert-danger">{{ error }}</div>
-} @else if (recipes.length === 0) {
-  <div class="alert alert-info">{{ 'COMMON.NO_ITEMS' | translate }}</div>
-} @else {
-  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-    @for (recipe of recipes; track recipe.id) {
-      <div class="col">
-        <div class="card h-100 hover-shadow" [routerLink]="['/recipes', recipe.id]" style="cursor: pointer;">
-          @if (recipe.image) {
-            <img [src]="recipe.image" class="card-img-top recipe-image" [alt]="recipe.title">
-          } @else {
-            <div class="card-img-top recipe-image bg-light d-flex align-items-center justify-content-center">
-              <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
-            </div>
-          }
-          <div class="card-body text-center">
-            <h5 class="card-title">{{ recipe.title }}</h5>
-            <p class="card-text text-muted">
-              <i class="bi bi-clock"></i> {{ recipe.time }} {{ 'RECIPE.TIME' | translate }}
-            </p>
-          </div>
-        </div>
-      </div>
-    }
-  </div>
+  }
+</div>
 }
 
 <style>
@@ -60,10 +63,11 @@
     height: 200px;
     object-fit: cover;
   }
-  
+
   .hover-shadow:hover {
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     transform: translateY(-3px);
     transition: all 0.3s ease;
   }
+
 </style>

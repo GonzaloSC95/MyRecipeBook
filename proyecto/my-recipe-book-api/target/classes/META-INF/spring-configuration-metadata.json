@@ -1,0 +1,17 @@
+{
+  "groups": [
+    {
+      "name": "file",
+      "type": "com.example.recipeapi.config.FileStorageProperties",
+      "sourceType": "com.example.recipeapi.config.FileStorageProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "file.upload-dir",
+      "type": "java.lang.String",
+      "sourceType": "com.example.recipeapi.config.FileStorageProperties"
+    }
+  ],
+  "hints": []
+}

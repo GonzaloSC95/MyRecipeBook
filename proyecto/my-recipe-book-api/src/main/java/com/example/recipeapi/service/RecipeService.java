@@ -1,22 +1,22 @@
 package com.example.recipeapi.service;
 
-import com.example.recipeapi.model.Recipe;
-import com.example.recipeapi.model.User;
-import com.example.recipeapi.model.Category;
-import com.example.recipeapi.model.Ingredient;
-import com.example.recipeapi.repository.RecipeRepository;
-import com.example.recipeapi.repository.UserRepository;
-import com.example.recipeapi.repository.CategoryRepository;
-import com.example.recipeapi.dto.RecipeDto;
-import com.example.recipeapi.dto.IngredientDto;
-import com.example.recipeapi.exception.ResourceNotFoundException;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.example.recipeapi.dto.IngredientDto;
+import com.example.recipeapi.dto.RecipeDto;
+import com.example.recipeapi.exception.ResourceNotFoundException;
+import com.example.recipeapi.model.Category;
+import com.example.recipeapi.model.Ingredient;
+import com.example.recipeapi.model.Recipe;
+import com.example.recipeapi.model.User;
+import com.example.recipeapi.repository.CategoryRepository;
+import com.example.recipeapi.repository.RecipeRepository;
+import com.example.recipeapi.repository.UserRepository;
 
 @Service
 public class RecipeService {
@@ -26,6 +26,9 @@ public class RecipeService {
     
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private IngredientService ingredientService;
     
     @Autowired
     private CategoryRepository categoryRepository;
@@ -118,7 +121,45 @@ public class RecipeService {
                     .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + recipeDto.getUserId()));
             existingRecipe.setUser(user);
         }
+
+        // Update ingredients
+        if (recipeDto.getIngredients() != null && !recipeDto.getIngredients().isEmpty()) {
+            // Save the new ingredients
+            Set<IngredientDto> ingredients = recipeDto.getIngredients().stream()
+                .map(ingredientDto -> {
+                    System.out.println("Saving ingredient: " + ingredientDto.getName() + " - " + ingredientDto.getId());
+                    return ingredientService.createIngredient(ingredientDto);
+                })
+                .collect(Collectors.toSet());
+            // Clear the old ingredients
+            for (Ingredient ingredient : existingRecipe.getIngredients()) {
+                // Check if the ingredient is not in the new list
+                try {
+                    ingredients.stream()
+                        .filter(ingredientDto -> !(ingredientDto.getId().equals(ingredient.getId())))
+                        .findFirst()
+                        .ifPresent(ingredientDto -> {
+                            // If the ingredient is not in the new list, delete it
+                            ingredientService.deleteIngredient(ingredient.getId());
+                        });
+                } catch (Exception e) {
+                    System.out.println("Error deleting ingredient: " + ingredient.getName() + " - " + ingredient.getId());
+                    e.printStackTrace();
+                }
+            }
+            // Clear the existing ingredients to avoid duplicates
+            existingRecipe.getIngredients().clear();
+            // Set the new ingredients
+            ingredients.forEach(ingredientDto -> {
+                Ingredient ingredient = new Ingredient();
+                ingredient.setName(ingredientDto.getName());
+                ingredient.setQuantity(ingredientDto.getQuantity());
+                ingredient.setRecipe(existingRecipe); // Set the recipe reference
+                existingRecipe.getIngredients().add(ingredient);
+            });
+        }
         
+        // Save the updated recipe
         Recipe updatedRecipe = recipeRepository.save(existingRecipe);
         return convertToDto(updatedRecipe);
     }

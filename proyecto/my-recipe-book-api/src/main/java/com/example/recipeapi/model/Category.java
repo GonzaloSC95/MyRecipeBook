@@ -1,7 +1,12 @@
 package com.example.recipeapi.model;
 
 import jakarta.persistence.*;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "categories")
@@ -22,6 +27,10 @@ public class Category {
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference("user-category")
     private User user;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("category-recipe")
+    private Set<Recipe> recipes = new HashSet<>();
 
     // Constructors
     public Category() {

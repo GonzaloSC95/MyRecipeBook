@@ -18,16 +18,16 @@ export class CategoryDetailComponent implements OnInit {
   recipes: Recipe[] = [];
   loading = true;
   error: string | null = null;
-  
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private categoryService: CategoryService,
     private recipeService: RecipeService
   ) {}
-  
+
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       if (params['id']) {
         const categoryId = +params['id'];
         this.loadCategory(categoryId);
@@ -38,7 +38,7 @@ export class CategoryDetailComponent implements OnInit {
       }
     });
   }
-  
+
   loadCategory(id: number): void {
     this.categoryService.getCategoryById(id).subscribe({
       next: (category) => {
@@ -48,10 +48,10 @@ export class CategoryDetailComponent implements OnInit {
         console.error('Error loading category:', err);
         this.error = 'Failed to load category details';
         this.loading = false;
-      }
+      },
     });
   }
-  
+
   loadRecipes(categoryId: number): void {
     this.recipeService.getRecipesByCategoryId(categoryId).subscribe({
       next: (recipes) => {
@@ -62,13 +62,27 @@ export class CategoryDetailComponent implements OnInit {
         console.error('Error loading recipes:', err);
         this.error = 'Failed to load recipes for this category';
         this.loading = false;
-      }
+      },
     });
   }
-  
+
   editCategory(): void {
     if (this.category && this.category.id) {
       this.router.navigate(['/categories', this.category.id, 'edit']);
+    }
+  }
+
+  deleteCategory() {
+    if (this.category && this.category.id) {
+      this.categoryService.deleteCategory(this.category.id).subscribe({
+        next: () => {
+          this.router.navigate(['/categories']);
+        },
+        error: (err) => {
+          console.error('Error deleting category:', err);
+          this.error = 'Failed to delete category';
+        },
+      });
     }
   }
 }

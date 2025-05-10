@@ -37,4 +37,14 @@ public class IngredientDto {
     public void setRecipeId(Long recipeId) {
         this.recipeId = recipeId;
     }
+
+    @Override
+    public String toString() {
+        return "IngredientDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", quantity='" + quantity + '\'' +
+                ", recipeId=" + recipeId +
+                '}';
+    }
 }

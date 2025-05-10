@@ -1,7 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormArray,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecipeService } from '../../../services/recipe.service';
 import { CategoryService } from '../../../services/category.service';
@@ -48,8 +54,8 @@ export class RecipeFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCategories();
-    
-    this.route.params.subscribe(params => {
+
+    this.route.params.subscribe((params) => {
       if (params['id']) {
         this.isEditMode = true;
         this.recipeId = +params['id'];
@@ -68,25 +74,25 @@ export class RecipeFormComponent implements OnInit {
       time: [null, Validators.required],
       categoryId: ['', Validators.required],
       image: [''],
-      ingredients: this.fb.array([])
+      ingredients: this.fb.array([]),
     });
   }
 
   loadCategories(): void {
     const userId = this.authService.currentUserValue?.id;
-    
+
     if (!userId) {
       this.error = 'User not authenticated';
       return;
     }
-    
+
     this.loading = true;
-    
+
     this.categoryService.getCategoriesByUserId(userId).subscribe({
       next: (categories) => {
         this.categories = categories;
         this.loading = false;
-        
+
         if (categories.length === 0) {
           console.warn('No categories found for this user');
         }
@@ -95,7 +101,7 @@ export class RecipeFormComponent implements OnInit {
         console.error('Error loading categories:', err);
         this.error = 'Failed to load categories';
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -106,14 +112,14 @@ export class RecipeFormComponent implements OnInit {
     this.recipeService.getRecipeById(this.recipeId).subscribe({
       next: (recipe) => {
         console.log('Loaded recipe for edit:', recipe);
-        
+
         // Patch form with recipe data
         this.recipeForm.patchValue({
           title: recipe.title,
           steps: recipe.steps,
           time: recipe.time,
           categoryId: recipe.categoryId,
-          image: recipe.image || ''
+          image: recipe.image || '',
         });
 
         // Set image preview if we have an image URL
@@ -127,7 +133,7 @@ export class RecipeFormComponent implements OnInit {
         // Add ingredients if they exist
         if (recipe.ingredients && recipe.ingredients.length > 0) {
           console.log('Recipe has ingredients:', recipe.ingredients);
-          
+
           // Sort ingredients by ID before adding them to the form
           const sortedIngredients = [...recipe.ingredients].sort((a, b) => {
             // Handle undefined IDs - put new ingredients (without IDs) at the end
@@ -135,14 +141,14 @@ export class RecipeFormComponent implements OnInit {
             if (!b.id) return -1;
             return a.id - b.id;
           });
-          
-          sortedIngredients.forEach(ingredient => {
+
+          sortedIngredients.forEach((ingredient) => {
             // Create a form group for each ingredient from the DTO
             const ingredientGroup = this.createIngredientGroup({
               id: ingredient.id,
               name: ingredient.name,
               quantity: ingredient.quantity,
-              recipeId: ingredient.recipeId
+              recipeId: ingredient.recipeId,
             });
             this.ingredients.push(ingredientGroup);
           });
@@ -158,7 +164,7 @@ export class RecipeFormComponent implements OnInit {
         console.error('Error loading recipe:', error);
         this.error = 'Failed to load recipe details';
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -172,12 +178,14 @@ export class RecipeFormComponent implements OnInit {
       tempId: [ingredient?.tempId || this.generateTempId()],
       name: [ingredient?.name || '', Validators.required],
       quantity: [ingredient?.quantity || ''],
-      recipeId: [ingredient?.recipeId || null]
+      recipeId: [ingredient?.recipeId || null],
     });
   }
 
   private generateTempId(): string {
-    return 'temp-' + new Date().getTime() + '-' + Math.floor(Math.random() * 1000);
+    return (
+      'temp-' + new Date().getTime() + '-' + Math.floor(Math.random() * 1000)
+    );
   }
 
   addIngredient(): void {
@@ -187,10 +195,14 @@ export class RecipeFormComponent implements OnInit {
 
   removeIngredient(index: number): void {
     // Only proceed if we have a valid index and more than one ingredient
-    if (index >= 0 && index < this.ingredients.length && this.ingredients.length > 1) {
+    if (
+      index >= 0 &&
+      index < this.ingredients.length &&
+      this.ingredients.length > 1
+    ) {
       // Remove the specific index from the FormArray
       this.ingredients.removeAt(index);
-      
+
       // Log the action
       console.log('Ingredient removed at index', index);
     }
@@ -201,20 +213,22 @@ export class RecipeFormComponent implements OnInit {
     const file = event.target.files[0];
     if (file) {
       // Check file size and type
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      if (file.size > 5 * 1024 * 1024) {
+        // 5MB limit
         this.uploadError = 'File is too large. Max size is 5MB.';
         return;
       }
-      
+
       const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
       if (!validTypes.includes(file.type)) {
-        this.uploadError = 'Invalid file type. Please upload a JPEG, PNG, or GIF image.';
+        this.uploadError =
+          'Invalid file type. Please upload a JPEG, PNG, or GIF image.';
         return;
       }
-      
+
       this.selectedFile = file;
       this.uploadError = null;
-      
+
       // Create a preview of the selected image
       const reader = new FileReader();
       reader.onload = (e: any) => {
@@ -223,29 +237,31 @@ export class RecipeFormComponent implements OnInit {
       reader.readAsDataURL(file);
     }
   }
-  
+
   // Upload the file and then submit the form
   uploadFileAndSubmitForm(): void {
     if (this.selectedFile) {
       this.uploadProgress = 0;
       this.uploadSuccess = false;
       this.uploadError = null;
-      
+
       this.fileUploadService.upload(this.selectedFile, 'recipe').subscribe({
         next: (event: any) => {
           if (event.type === HttpEventType.UploadProgress) {
-            this.uploadProgress = Math.round(100 * event.loaded / event.total);
+            this.uploadProgress = Math.round(
+              (100 * event.loaded) / event.total
+            );
           } else if (event instanceof HttpResponse) {
             console.log('Upload response:', event.body);
-            
+
             // Get the file URL from the response - using fileUrl from your API
             const fileUrl = event.body.fileUrl;
-            
+
             if (fileUrl) {
               console.log('File URL received:', fileUrl);
               this.recipeForm.patchValue({ image: fileUrl });
               this.uploadSuccess = true;
-              
+
               // Now submit the form with the file URL
               this.submitRecipeData();
             } else {
@@ -259,26 +275,30 @@ export class RecipeFormComponent implements OnInit {
           console.error('Upload error:', err);
           this.uploadError = 'Failed to upload image. Please try again.';
           this.loading = false;
-        }
+        },
       });
     } else {
       // No new file selected, just submit the form with existing data
       this.submitRecipeData();
     }
   }
-  
+
   // Submit form with or without image upload
   onSubmit(): void {
     this.submitted = true;
-    
+
     if (this.recipeForm.invalid) {
-      console.log('Form is invalid', this.recipeForm.value, this.recipeForm.errors);
+      console.log(
+        'Form is invalid',
+        this.recipeForm.value,
+        this.recipeForm.errors
+      );
       return;
     }
-    
+
     this.loading = true;
     this.error = null;
-    
+
     // If there's a file to upload, handle that first
     if (this.selectedFile) {
       this.uploadFileAndSubmitForm();
@@ -291,13 +311,13 @@ export class RecipeFormComponent implements OnInit {
   // Final form submission after file upload (if any)
   submitRecipeData(): void {
     const userId = this.authService.currentUserValue?.id;
-    
+
     if (!userId) {
       this.error = 'User not authenticated';
       this.loading = false;
       return;
     }
-    
+
     // Create recipe data object
     const formValue = this.recipeForm.value;
     const recipeData: Recipe = {
@@ -311,12 +331,13 @@ export class RecipeFormComponent implements OnInit {
         id: ing.id || undefined,
         name: ing.name,
         quantity: ing.quantity,
-        recipeId: ing.recipeId || (this.isEditMode ? this.recipeId : undefined)
-      }))
+        recipeId: ing.recipeId || (this.isEditMode ? this.recipeId : undefined),
+      })),
     };
-    
+
     console.log('Submitting recipe with data:', recipeData);
-    
+    console.log(this.isEditMode, this.recipeId);
+
     if (this.isEditMode && this.recipeId) {
       recipeData.id = this.recipeId;
       this.recipeService.updateRecipe(recipeData).subscribe({
@@ -327,7 +348,7 @@ export class RecipeFormComponent implements OnInit {
           console.error('Error updating recipe:', error);
           this.error = 'Failed to update recipe';
           this.loading = false;
-        }
+        },
       });
     } else {
       this.recipeService.createRecipe(recipeData).subscribe({
@@ -338,7 +359,7 @@ export class RecipeFormComponent implements OnInit {
           console.error('Error creating recipe:', error);
           this.error = 'Failed to create recipe';
           this.loading = false;
-        }
+        },
       });
     }
   }

@@ -22,8 +22,8 @@ public class FileController {
 
     @PostMapping("/api/upload")
     public ResponseEntity<Map<String, String>> uploadFile(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("type") String type) {
+            @RequestParam() MultipartFile file,
+            @RequestParam() String type) {
         
         // Validate file type (recipe or category)
         if (!type.equals("recipe") && !type.equals("category")) {

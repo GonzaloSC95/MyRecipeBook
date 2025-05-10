@@ -54,7 +54,7 @@ export class RecipeDetailComponent implements OnInit {
         this.error = 'Error loading recipe';
         this.loading = false;
         console.error(err);
-      }
+      },
     });
   }
 
@@ -67,7 +67,7 @@ export class RecipeDetailComponent implements OnInit {
       error: (err) => {
         console.error('Error loading category', err);
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -91,7 +91,7 @@ export class RecipeDetailComponent implements OnInit {
         error: (err) => {
           this.error = 'Error deleting recipe';
           console.error(err);
-        }
+        },
       });
     }
   }

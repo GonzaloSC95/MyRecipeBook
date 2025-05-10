@@ -34,8 +34,8 @@ public class CategoryController {
             List<CategoryDto> categories = categoryService.getCategoriesByUserId(userId);
 
             // Debug log
-            System.out.println("Returning " + categories.size() + " categories for user " + userId);
-            categories.forEach(cat -> System.out.println("- Category: id=" + cat.getId() + ", name=" + cat.getName()));
+            // System.out.println("Returning " + categories.size() + " categories for user " + userId);
+            // categories.forEach(cat -> System.out.println("- Category: id=" + cat.getId() + ", name=" + cat.getName()));
 
             return ResponseEntity.ok(categories);
         } catch (Exception e) {
