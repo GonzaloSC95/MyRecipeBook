@@ -1,0 +1,75 @@
+<div class="row mb-4">
+  <div class="col-md-8">
+    <h1>{{ 'RECIPE.TITLE' | translate }}</h1>
+  </div>
+  <div class="col-md-4 text-end">
+    <a routerLink="/recipes/new" class="btn btn-primary">
+      <i class="bi bi-plus-circle"></i> {{ 'RECIPE.ADD' | translate }}
+    </a>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-6">
+    <div class="input-group">
+      <span class="input-group-text">{{ 'RECIPE.CATEGORY' | translate }}</span>
+      <select class="form-select" [(ngModel)]="selectedCategoryId" (change)="filterByCategory()">
+        <option [ngValue]="null">{{ 'COMMON.ALL' | translate }}</option>
+        @for (category of categories; track category.id) {
+          <option [value]="category.id">{{ category.name }}</option>
+        }
+      </select>
+    </div>
+  </div>
+</div>
+
+@if (loading) {
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+    </div>
+  </div>
+} @else if (error) {
+  <div class="alert alert-danger">{{ error }}</div>
+} @else if (recipes.length === 0) {
+  <div class="alert alert-info">{{ 'COMMON.NO_ITEMS' | translate }}</div>
+} @else {
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    @for (recipe of recipes; track recipe.id) {
+      <div class="col">
+        <div class="card h-100 hover-shadow" [routerLink]="['/recipes', recipe.id]" style="cursor: pointer;">
+          @if (recipe.image) {
+            <img [src]="recipe.image" class="card-img-top recipe-image" [alt]="recipe.title">
+          } @else {
+            <div class="card-img-top recipe-image bg-light d-flex align-items-center justify-content-center">
+              <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+            </div>
+          }
+          <div class="card-body text-center">
+            <h5 class="card-title">{{ recipe.title }}</h5>
+            <p class="card-text text-muted">
+              <i class="bi bi-clock"></i> {{ recipe.time }} {{ 'RECIPE.TIME' | translate }}
+              
+              @if (getCategoryForRecipe(recipe)) {
+                <span class="ms-2"><i class="bi bi-tag"></i> {{ getCategoryForRecipe(recipe)?.name }}</span>
+              }
+            </p>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+}
+
+<style>
+  .recipe-image {
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .hover-shadow:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+    transition: all 0.3s ease;
+  }
+</style>

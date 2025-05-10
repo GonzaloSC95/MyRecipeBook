@@ -1,0 +1,63 @@
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-4">
+    <div class="card">
+      <div class="card-header" style="background-color: #fbfbfb; ">
+        <h4 class="mb-0 text-center">{{ 'USER.REGISTER' | translate }}</h4>
+      </div>
+      <div class="card-body">
+        @if (error) {
+          <div class="alert alert-danger">{{ error }}</div>
+        }
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label for="name" class="form-label">{{ 'USER.NAME' | translate }}</label>
+            <input type="text" id="name" formControlName="name" class="form-control"
+              [class.is-invalid]="submitted && registerForm.get('name')?.errors">
+            @if (submitted && registerForm.get('name')?.errors?.['required']) {
+              <div class="invalid-feedback">{{ 'USER.NAME' | translate }} {{ 'COMMON.REQUIRED' | translate }}</div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label">{{ 'USER.EMAIL' | translate }}</label>
+            <input type="email" id="email" formControlName="email" class="form-control"
+              [class.is-invalid]="submitted && registerForm.get('email')?.errors">
+            @if (submitted && registerForm.get('email')?.errors) {
+              <div class="invalid-feedback">
+                @if (registerForm.get('email')?.hasError('required')) {
+                  {{ 'USER.EMAIL' | translate }} {{ 'COMMON.REQUIRED' | translate }}
+                } @else if (registerForm.get('email')?.hasError('email')) {
+                  {{ 'USER.EMAIL_INVALID' | translate }}
+                }
+              </div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label">{{ 'USER.PASSWORD' | translate }}</label>
+            <input type="password" id="password" formControlName="password" class="form-control"
+              [class.is-invalid]="submitted && registerForm.get('password')?.errors">
+            @if (submitted && registerForm.get('password')?.errors?.['required']) {
+              <div class="invalid-feedback">{{ 'USER.PASSWORD' | translate }} {{ 'COMMON.REQUIRED' | translate }}</div>
+            }
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary" [disabled]="loading">
+              @if (loading) {
+                <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+              }
+              {{ 'USER.REGISTER' | translate }}
+            </button>
+          </div>
+
+          <div class="mt-3 text-center">
+            <p>{{ 'USER.HAVE_ACCOUNT' | translate }} <a routerLink="/auth/login">{{ 'USER.LOGIN' | translate }}</a></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

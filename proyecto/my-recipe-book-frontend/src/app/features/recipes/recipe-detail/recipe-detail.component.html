@@ -1,0 +1,102 @@
+@if (loading) {
+  <div class="d-flex justify-content-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+    </div>
+  </div>
+} @else if (error) {
+  <div class="alert alert-danger">{{ error }}</div>
+} @else if (recipe) {
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h1>{{ recipe.title }}</h1>
+    </div>
+    <div class="col-md-4 text-end">
+      <a [routerLink]="['/recipes', recipe.id, 'edit']" class="btn btn-primary me-2">
+        <i class="bi bi-pencil-square"></i> {{ 'RECIPE.EDIT' | translate }}
+      </a>
+      <button class="btn btn-danger" (click)="openDeleteConfirmation(deleteModal)">
+        <i class="bi bi-trash"></i> {{ 'RECIPE.DELETE' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      @if (recipe.image) {
+        <img [src]="recipe.image" class="img-fluid rounded mb-4" [alt]="recipe.title">
+      } @else {
+        <div class="bg-light rounded mb-4 p-5 text-center text-muted">
+          <i class="bi bi-card-image fs-1"></i>
+          <p>{{ 'COMMON.NO_IMAGE' | translate }}</p>
+        </div>
+      }
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">{{ 'RECIPE.STEPS' | translate }}</h5>
+        </div>
+        <div class="card-body">
+          <p style="white-space: pre-line">{{ recipe.steps }}</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card mt-4">
+        <div class="card-header">
+          <h5 class="mb-0">{{ 'RECIPE.INFO' | translate }}</h5>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <i class="bi bi-clock me-2"></i> {{ recipe.time }} {{ 'RECIPE.TIME' | translate }}
+          </li>
+          @if (category) {
+            <li class="list-group-item">
+              <i class="bi bi-tag me-2"></i> {{ category.name }}
+            </li>
+          }
+        </ul>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">{{ 'RECIPE.INGREDIENTS' | translate }}</h5>
+        </div>
+        <ul class="list-group list-group-flush">
+          @if (ingredients && ingredients.length > 0) {
+            @for (ingredient of ingredients; track ingredient.name) {
+              <li class="list-group-item d-flex justify-content-between">
+                <span>{{ ingredient.name }}</span>
+                <span class="text-muted">{{ ingredient.quantity }}</span>
+              </li>
+            }
+          } @else {
+            <li class="list-group-item">{{ 'COMMON.NO_ITEMS' | translate }}</li>
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <a routerLink="/recipes" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i> {{ 'COMMON.BACK' | translate }}
+    </a>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <ng-template #deleteModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">{{ 'COMMON.CONFIRM' | translate }}</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+      <p>{{ 'RECIPE.CONFIRM_DELETE' | translate }} "{{ recipe.title }}"?</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">{{ 'COMMON.CANCEL' | translate }}</button>
+      <button type="button" class="btn btn-danger" (click)="modal.close('delete')">{{ 'RECIPE.DELETE' | translate }}</button>
+    </div>
+  </ng-template>
+}

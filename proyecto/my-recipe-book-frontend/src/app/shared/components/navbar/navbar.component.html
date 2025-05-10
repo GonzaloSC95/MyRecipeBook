@@ -1,0 +1,54 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container" style="padding-top: 0.5rem; padding-bottom: 0.5rem;">
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center" routerLink="/recipes">
+      <img src="../../../assets/logo.png" alt="Logo" width="50" height="40" class="me-2">
+      <span class="fw-bold">MyRecipeBook</span>
+    </a>
+
+    <!-- Toggle button for mobile -->
+    <button class="navbar-toggler" type="button" (click)="toggleMenu()">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar links -->
+    <div class="collapse navbar-collapse" [ngbCollapse]="isMenuCollapsed">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0" *ngIf="currentUser">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/categories" routerLinkActive="active">{{ 'CATEGORY.NAME' | translate }}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/recipes" routerLinkActive="active">{{ 'RECIPE.TITLE' | translate }}</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto">
+        <!-- Mostrar solo si el usuario está autenticado -->
+        <li class="nav-item" *ngIf="currentUser; else guestLinks" ngbDropdown display="dynamic" placement="bottom-end">
+          <a class="nav-link dropdown-toggle" id="userDropdown" role="button" ngbDropdownToggle>
+            {{ currentUser.name }}
+          </a>
+          <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu aria-labelledby="userDropdown">
+            <a ngbDropdownItem href="#" (click)="logout(); $event.preventDefault()">{{ 'USER.LOGOUT' | translate }}</a>
+          </div>
+        </li>
+        <!-- Mostrar solo si el usuario no está autenticado -->
+        <ng-template #guestLinks>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/auth/login">{{ 'USER.LOGIN' | translate }}</a>
+          </li>
+        </ng-template>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<style>
+.navbar-brand {
+  margin-bottom: 0 !important; /* Asegura que el logo y el texto estén alineados */
+}
+
+.navbar-nav .nav-link {
+  padding-top: 0.25rem !important; /* Ajusta el espacio interno de los enlaces */
+  padding-bottom: 0.25rem !important;
+}
+</style>

@@ -1,0 +1,66 @@
+{
+  "APP": {
+    "TITLE": "MyRecipeBook",
+    "WELCOME": "Bienvenido a MyRecipeBook"
+  },
+  "RECIPE": {
+    "TITLE": "Recetas",
+    "STEPS": "Pasos",
+    "TIME": "minutos",
+    "INGREDIENTS": "Ingredientes",
+    "CATEGORY": "Categoría",
+    "ADD": "Añadir Receta",
+    "EDIT": "Editar Receta",
+    "DELETE": "Eliminar Receta",
+    "DETAILS": "Ver Detalles",
+    "INFO": "Información de la Receta",
+    "IMAGE": "Imagen",
+    "CONFIRM_DELETE": "¿Estás seguro de que deseas eliminar esta receta?"
+  },
+  "INGREDIENT": {
+    "NAME": "Nombre",
+    "QUANTITY": "Cantidad",
+    "ADD": "Añadir Ingrediente",
+    "DELETE": "Eliminar"
+  },
+  "CATEGORY": {
+    "NAME": "Categorías",
+    "ADD": "Añadir Categoría",
+    "EDIT": "Editar Categoría",
+    "DELETE": "Eliminar Categoría",
+    "IMAGE": "Imagen de Categoría"
+
+  },
+  "USER": {
+    "NAME": "Nombre",
+    "EMAIL": "Correo electrónico",
+    "EMAIL_INVALID": "El correo electrónico no es válido",
+    "PASSWORD": "Contraseña",
+    "PASSWORD_LENGTH": "La contraseña debe tener al menos 6 caracteres",
+    "LOGIN": "Iniciar Sesión",
+    "LOGOUT": "Cerrar Sesión",
+    "REGISTER": "Registrarse",
+    "PROFILE": "Mi Perfil",
+    "NO_ACCOUNT": "¿No tienes una cuenta?",
+    "HAVE_ACCOUNT": "¿Ya tienes una cuenta?"
+  },
+  "COMMON": {
+    "SAVE": "Guardar",
+    "CANCEL": "Cancelar",
+    "BACK": "Volver",
+    "SEARCH": "Buscar",
+    "ACTIONS": "Acciones",
+    "LOADING": "Cargando...",
+    "NO_ITEMS": "No hay elementos para mostrar",
+    "CONFIRM": "¿Estás seguro?",
+    "ALL": "Todos",
+    "REQUIRED": "es requerido",
+    "SELECT": "Seleccione una opción",
+    "REFRESH": "Actualizar",
+    "IMAGE_PREVIEW": "Vista previa de la imagen",
+    "NO_IMAGE": "No hay imagen de categoría disponible",
+    "IMAGE_SELECT": "Seleccionar imagen",
+    "BROWSE": "Buscar imagen",
+    "IMAGE_HINT": "La imagen debe ser menor de 5 MB y en formato JPG, PNG o GIF"
+  }
+}

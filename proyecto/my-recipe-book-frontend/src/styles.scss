@@ -1,0 +1,36 @@
+/* You can add global styles to this file, and also import other style files */
+@use 'bootstrap/scss/bootstrap' as bootstrap;
+
+body {
+  font-family: var(--bs-body-font-family);
+  background-color: #f8f9fa;
+}
+
+.container {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.card {
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.recipe-image {
+  height: 200px;
+  object-fit: cover;
+}
+
+.navbar {
+  padding-top: 0.5rem !important; /* Reduce el espacio superior */
+  padding-bottom: 0.5rem !important; /* Reduce el espacio inferior */
+}
+
+.navbar-brand {
+  margin-bottom: 0 !important; /* Asegura que el logo y el texto estén alineados */
+}
+
+.navbar-nav .nav-link {
+  padding-top: 0.25rem !important; /* Ajusta el espacio interno de los enlaces */
+  padding-bottom: 0.25rem !important;
+}
